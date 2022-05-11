@@ -59,6 +59,7 @@ public class MainService {
         }
         return new PlanResponseDto(planListDtos);
     }
+    //한줄 수정 CICD 테스트
 
     @Transactional
     public TwoPartyListResponseDto getTwoParty() {
