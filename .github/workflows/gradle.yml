@@ -4,7 +4,7 @@
 # documentation.
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
-
+#  
 name: Java CI with Gradle
 
 on:
@@ -28,11 +28,23 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
-      with:
-        arguments: build
         
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-  
+      
+    - name: Build with Gradle
+      run: ./gradlew clean build   
+
+    - name: Make zip file
+      run: zip -r ./springboot-intro-build.zip .
+      shell: bash
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Upload to S3
+      run: aws s3 cp --region ap-northeast-2 ./springboot-intro-build.zip s3://eyetravel/springboot-intro-build.zip
