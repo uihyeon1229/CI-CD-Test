@@ -8,13 +8,12 @@ import java.util.Optional;
 
 public interface MountainCommentRepository extends JpaRepository<MountainComment, Long> {
 
-    List<MountainComment> findAllByMountain100IdOrderByCreatedAtDesc(Long mountainId);
-
-    List<MountainComment> findAllByMountain100Id(Long mountain100Id);
-
     List<MountainComment> findAllByUserId(Long userId);
 
-    boolean existsByUserIdAndMountain100Id(Long userId, Long mountain100Id);
+    List<MountainComment> findAllByMountainId(Long mountainId);
 
-//    Optional<MountainComment> findAllByUserId(Long userId);
+    List<MountainComment> findAllByMountainIdOrderByCreatedAtDesc(Long mountainId);
+
+    boolean existsByUserIdAndMountainId(Long userId, Long mountainId);
+
 }

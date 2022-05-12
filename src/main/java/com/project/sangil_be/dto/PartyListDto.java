@@ -1,5 +1,6 @@
 package com.project.sangil_be.dto;
 
+import com.project.sangil_be.model.Party;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +12,7 @@ import java.time.LocalTime;
 @Setter
 public class PartyListDto {
     private Long partyId;
-    private String username;
+    private String nickname;
     private String title;
     private String partyContent;
     private String mountain;
@@ -23,28 +24,18 @@ public class PartyListDto {
     private boolean completed;
     private LocalDateTime createdAt;
 
-    public PartyListDto(Long partyId, String username, String title, String partyContent,
-                        String mountain, String address, LocalDate partyDate, LocalTime partyTime,
-                        int maxPeople, int curPeople, boolean completed, LocalDateTime createdAt) {
-        this.partyId = partyId;
-        this.username = username;
-        this.title = title;
-        this.partyContent = partyContent;
-        this.mountain = mountain;
-        this.address = address;
-        this.partyDate = partyDate;
-        this.partyTime = partyTime;
-        this.maxPeople = maxPeople;
-        this.curPeople = curPeople;
+    public PartyListDto(Party party, boolean completed) {
+        this.partyId = party.getPartyId();
+        this.nickname = party.getUser().getNickname();
+        this.title = party.getTitle();
+        this.partyContent = party.getPartyContent();
+        this.mountain = party.getMountain();
+        this.address = party.getAddress();
+        this.partyDate = party.getPartyDate();
+        this.partyTime = party.getPartyTime();
+        this.maxPeople = party.getMaxPeople();
+        this.curPeople = party.getCurPeople();
         this.completed = completed;
-        this.createdAt = createdAt;
-    }
-
-    public PartyListDto(String title, LocalDateTime createdAt, int maxPeople, int curPeople, LocalDate partyDate) {
-        this.title = title;
-        this.createdAt = createdAt;
-        this.maxPeople = maxPeople;
-        this.curPeople = curPeople;
-        this.partyDate = partyDate;
+        this.createdAt = party.getCreatedAt();
     }
 }

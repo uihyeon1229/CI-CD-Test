@@ -1,13 +1,13 @@
 package com.project.sangil_be.dto;
 
-import com.project.sangil_be.model.Mountain100;
+import com.project.sangil_be.model.Mountain;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class BookMarkResponseDto {
-    private Long mountain100Id;
+    private Long mountainId;
     private String mountainName;
     private String mountainAddress;
     private String mountainImageUrl;
@@ -16,17 +16,14 @@ public class BookMarkResponseDto {
     private Double distance;
 
 
-    public BookMarkResponseDto(Mountain100 mountain100, boolean bookMarkChk, float starAvr, Double distance) {
-        this.mountain100Id = mountain100.getMountain100Id();
-        this.mountainName = mountain100.getMountain();
-        this.mountainAddress = mountain100.getMountainAddress();
-        this.mountainImageUrl = mountain100.getMountainImgUrl();
+    public BookMarkResponseDto(Mountain mountain, boolean bookMarkChk, float starAvr, Double distance) {
+        this.mountainId = mountain.getMountainId();
+        this.mountainName = mountain.getMountain();
+        this.mountainAddress = mountain.getMountainAddress();
+        this.mountainImageUrl = mountain.getMountainImgUrl();
         this.bookMarkChk = bookMarkChk;
         this.starAvr = starAvr;
         this.distance = distance;
     }
 
-    public BookMarkResponseDto(String mountain100) {
-        this.mountainName=mountain100;
-    }
 }

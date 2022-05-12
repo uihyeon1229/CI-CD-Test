@@ -8,11 +8,5 @@ import java.util.List;
 public interface PartyRepository extends JpaRepository<Party, Long> {
     List<Party> findAllByOrderByCreatedAtDesc();
 
-
-
-//    Party findAllByPartyIdOrderByPartyDateAsc(Long partyId);
-
     Party findByPartyIdOrderByPartyDateAsc(Long partyId);
-
-    Party findByPartyId(Long partyId);
 }

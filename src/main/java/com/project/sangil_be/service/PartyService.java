@@ -30,7 +30,7 @@ public class PartyService {
     private final UserRepository userRepository;
     private final PartyRepository partyRepository;
     private final AttendRepository attendRepository;
-    //    private final PlanRepository planRepository;
+//    private final PlanRepository planRepository;
     private final Validator validator;
 
 
@@ -50,25 +50,17 @@ public class PartyService {
         boolean completed = true;
 
         //Party에 작성한 내용 및 현재 모집인원 수 추가
-        Party party = new Party(partyRequestDto.getTitle(), partyRequestDto.getMountain(),
-                partyRequestDto.getAddress(), partyRequestDto.getPartyDate(),
-                partyRequestDto.getPartyTime(), partyRequestDto.getMaxPeople(),
-                curPeople, partyRequestDto.getPartyContent(), completed, user);
+        Party party = new Party(partyRequestDto, curPeople, completed, user);
 
         //레파지토리에 저장
         partyRepository.save(party);
 
         //참여하기에 생성한 유저의 내용 저장
         Attend attend = new Attend(userDetails.getUser().getUserId(), party.getPartyId());
-//        Plan plan = new Plan(userDetails.getUser().getUserId(), party.getPartyId());
 
         attendRepository.save(attend);
-//        planRepository.save(plan);
 
-        return new PartyListDto(party.getPartyId(), party.getUser().getUsername(), party.getTitle(),
-                party.getPartyContent(), party.getMountain(), party.getAddress(),
-                party.getPartyDate(), party.getPartyTime(), party.getMaxPeople(),
-                party.getCurPeople(), completed, party.getCreatedAt());
+        return new PartyListDto(party, completed);
     }
 
     // complete 수정 필요
@@ -90,14 +82,11 @@ public class PartyService {
     private void setPartyList(List<Party> partyList, List<PartyListDto> partyListDto) {
         for (Party party : partyList) {
             boolean completed = true;
-            if (party.getMaxPeople() <= party.getCurPeople()) {
+            if(party.getMaxPeople() <= party.getCurPeople()) {
                 completed = false;
             }
 
-            PartyListDto partyDto = new PartyListDto(party.getPartyId(), party.getUser().getUsername(), party.getTitle(),
-                    party.getPartyContent(), party.getMountain(), party.getAddress(),
-                    party.getPartyDate(), party.getPartyTime(), party.getMaxPeople(),
-                    party.getCurPeople(), completed, party.getCreatedAt());
+            PartyListDto partyDto = new PartyListDto(party,completed);
 
             partyListDto.add(partyDto);
         }
@@ -116,18 +105,14 @@ public class PartyService {
         List<Attend> attend = attendRepository.findByPartyId(partyId);
         List<PartymemberDto> partymemberDto = new ArrayList<>();
 
-        Party party = partyRepository.findById(partyId).orElse(null);
-        ;
+        Party party = partyRepository.findById(partyId).orElse(null);;
 
-        for (Attend attends : attend) {
+        for (Attend attends : attend){
             User user = userRepository.findByUserId(attends.getUserId());
             partymemberDto.add(new PartymemberDto(user));
         }
 
-        return new PartyDetailDto(party.getPartyId(), party.getUser().getUsername(), party.getUser().getUserImgUrl(),
-                party.getUser().getUserTitle(), party.getTitle(), party.getMountain(),
-                party.getAddress(), party.getPartyDate(), party.getMaxPeople(),
-                party.getCurPeople(), party.getPartyContent(), party.getCreatedAt(), partymemberDto);
+        return new PartyDetailDto(party,partymemberDto);
     }
 
     // api에 맞게 수정 필요
@@ -135,27 +120,20 @@ public class PartyService {
     @Transactional
     public PartyDetailDto updateParty(Long partyId, PartyRequestDto partyRequestDto) {
         Party party = partyRepository.findById(partyId).orElseThrow(
-                () -> new IllegalArgumentException("찾는 게시글이 없습니다.")
+                ()-> new IllegalArgumentException("찾는 게시글이 없습니다.")
         );
-//        if(partyRequestDto.getMaxPeople()>= party.getCurPeople()) {
         party.update(partyRequestDto.getPartyDate(), partyRequestDto.getPartyTime(),
-                partyRequestDto.getMaxPeople(), partyRequestDto.getPartyContent());
+                     partyRequestDto.getMaxPeople(), partyRequestDto.getPartyContent());
 
-        return new PartyDetailDto(party.getPartyId(), party.getUser().getUsername(), party.getUser().getUserImgUrl(),
-                party.getUser().getUserTitle(), party.getTitle(), party.getMountain(),
-                party.getAddress(), party.getPartyDate(), party.getMaxPeople(),
-                party.getCurPeople(), party.getPartyContent(), party.getCreatedAt());
-//        } else {
-//
-//    }
-
-}
+        return new PartyDetailDto(party);
+    }
 
     // 동호회 모임 삭제 코드
     @Transactional
-    public void deleteParty(Long partyId) {
+    public void deleteParty(Long partyId,UserDetailsImpl userDetails) {
         try {
             partyRepository.deleteById(partyId);
+            attendRepository.deleteByPartyIdAndUserId(partyId,userDetails.getUser().getUserId());
         }catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("게시글을 삭제하지 못했습니다.");
         }

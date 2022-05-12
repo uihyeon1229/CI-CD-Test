@@ -2,15 +2,9 @@ package com.project.sangil_be.service;
 
 import com.project.sangil_be.api.WeatherService;
 import com.project.sangil_be.dto.*;
-import com.project.sangil_be.model.Course;
-import com.project.sangil_be.model.Mountain100;
-import com.project.sangil_be.model.MountainComment;
-import com.project.sangil_be.model.User;
-import com.project.sangil_be.repository.CourseRepository;
-import com.project.sangil_be.repository.Mountain100Repository;
-import com.project.sangil_be.repository.MountainCommentRepository;
-import com.project.sangil_be.repository.UserRepository;
-import com.project.sangil_be.utils.Validator;
+import com.project.sangil_be.model.*;
+import com.project.sangil_be.repository.*;
+import com.project.sangil_be.securtiy.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.ParseException;
 import org.springframework.data.domain.*;
@@ -24,35 +18,30 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class MountainService {
-    private final Mountain100Repository mountain100Repository;
+    private final MountainRepository mountainRepository;
     private final MountainCommentRepository mountainCommentRepository;
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
     private final WeatherService weatherService;
-    private final Validator validator;
+    private final BookMarkRepository bookMarkRepository;
 
     // 검색 전 페이지
     public List<SearchDto> Show10() {
+        List<Mountain> mountainList = mountainRepository.findAll();
 
-//        List <Mountain100> mountain100List = new ArrayList<>();
-//
-//        for (Long i = 0L; i<100; i++){
-//
-//            Mountain100 mountain100 = mountain100Repository.findByMountain100Id(i);
-//            mountain100List.add(mountain100);
-//
-//        }
-
-        List<Mountain100> mountain100List = mountain100Repository.findAll();
-
-        Collections.shuffle(mountain100List);
+        List<Mountain100Dto> mountain100DtoList = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            Mountain100Dto mountain100Dto = new Mountain100Dto(mountainList.get(i));
+            mountain100DtoList.add(mountain100Dto);
+        }
+        Collections.shuffle(mountain100DtoList);
 
         List<SearchDto> searchDto = new ArrayList<>();
 
         int star = 0;
         float starAvr;
         for (int i = 0; i < 10; i++) {
-            List<MountainComment> mountainComments = mountainCommentRepository.findAllByMountain100Id(mountain100List.get(i).getMountain100Id());
+            List<MountainComment> mountainComments = mountainCommentRepository.findAllByMountainId(mountain100DtoList.get(i).getMountainId());
             if (mountainComments.size() == 0) {
                 starAvr = 0;
             } else {
@@ -61,14 +50,8 @@ public class MountainService {
                 }
                 starAvr = (float) star / mountainComments.size();
             }
-            SearchDto mountainInfo = new SearchDto(
-                    mountain100List.get(i).getMountain100Id(),
-                    mountain100List.get(i).getMountain(),
-                    mountain100List.get(i).getMountainAddress(),
-                    mountain100List.get(i).getMountainImgUrl(),
-                    String.format("%.1f",starAvr),
-                    mountain100List.get(i).getLat(),
-                    mountain100List.get(i).getLng());
+            SearchDto mountainInfo = new SearchDto(String.format("%.1f",starAvr),mountain100DtoList.get(i));
+
             searchDto.add(mountainInfo);
         }
 
@@ -78,13 +61,13 @@ public class MountainService {
 
     // 검색 후 페이지
     public Page<SearchDto> searhMountain(String keyword, int pageNum) {
-        List<Mountain100> mountain100List = mountain100Repository.searchAllByMountain(keyword);
+        List<Mountain> mountainList = mountainRepository.searchAllByMountain(keyword);
         Pageable pageable = getPageable(pageNum);
         List<SearchDto> searchDtoList = new ArrayList<>();
-        setSearchList(mountain100List, searchDtoList);
+        setSearchList(mountainList, searchDtoList);
 
         int start = pageNum * 5;
-        int end = Math.min((start + 5), mountain100List.size());
+        int end = Math.min((start + 5), mountainList.size());
 
         Page<SearchDto> page = new PageImpl<>(searchDtoList.subList(start, end), pageable, searchDtoList.size());
         return page;
@@ -96,11 +79,11 @@ public class MountainService {
         return PageRequest.of(pageNum, 5, sort);
     }
 
-    private void setSearchList(List<Mountain100> mountain100List, List<SearchDto> searchDtoList) {
+    private void setSearchList(List<Mountain> mountainList, List<SearchDto> searchDtoList) {
         int star = 0;
         float starAvr;
-        for (Mountain100 mountain100 : mountain100List) {
-            List<MountainComment> mountainComments = mountainCommentRepository.findAllByMountain100Id(mountain100.getMountain100Id());
+        for (Mountain mountain : mountainList) {
+            List<MountainComment> mountainComments = mountainCommentRepository.findAllByMountainId(mountain.getMountainId());
             if (mountainComments.size() == 0) {
                 starAvr = 0;
             } else {
@@ -111,13 +94,13 @@ public class MountainService {
             }
 
             SearchDto searchDto = new SearchDto(
-                    mountain100.getMountain100Id(),
-                    mountain100.getMountain(),
-                    mountain100.getMountainAddress(),
-                    mountain100.getMountainImgUrl(),
+                    mountain.getMountainId(),
+                    mountain.getMountain(),
+                    mountain.getMountainAddress(),
+                    mountain.getMountainImgUrl(),
                     String.format("%.1f",starAvr),
-                    mountain100.getLat(),
-                    mountain100.getLng()
+                    mountain.getLat(),
+                    mountain.getLng()
             );
             searchDtoList.add(searchDto);
         }
@@ -126,12 +109,12 @@ public class MountainService {
     // 페이징 처리 수정
     // 산 상세 페이지
     public MountainResponseDto detailMountain(Long mountainId, int pageNum) throws IOException, ParseException {
-        Mountain100 mountain100 = mountain100Repository.findById(mountainId).orElseThrow(
+        Mountain mountain = mountainRepository.findById(mountainId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 글입니다.")
         );
-        WeatherDto weatherDto = weatherService.weather(mountain100.getLat(),mountain100.getLng());
+        WeatherDto weatherDto = weatherService.weather(mountain.getLat(),mountain.getLng());
 
-        List<MountainComment> mountainComments = mountainCommentRepository.findAllByMountain100IdOrderByCreatedAtDesc(mountainId);
+        List<MountainComment> mountainComments = mountainCommentRepository.findAllByMountainIdOrderByCreatedAtDesc(mountainId);
         Pageable pageable = getPageable(pageNum);
         List<CommentListDto> commentLists = new ArrayList<>();
         int star = 0;
@@ -156,14 +139,26 @@ public class MountainService {
         Page<CommentListDto> page = new PageImpl<>(commentLists.subList(start, end), pageable, commentLists.size());
         CommentDto commentDto = new CommentDto(page);
 
-        List<Course> courses = courseRepository.findAllByMountain100Id(mountainId);
+        List<Course> courses = courseRepository.findAllByMountainId(mountainId);
         List<CourseListDto> courseLists = new ArrayList<>();
         for (int i = 0; i < courses.size(); i++) {
             CourseListDto courseListDto = new CourseListDto(courses.get(i));
             courseLists.add(courseListDto);
         }
-        return new MountainResponseDto(mountain100, weatherDto, String.format("%.1f",starAvr), courseLists, commentDto);
+        return new MountainResponseDto(mountain, weatherDto,String.format("%.1f",starAvr), courseLists, commentDto);
     }
 
+    //북마크 생성
+    public String myBookMark(Long mountainId, UserDetailsImpl userDetails) {
+        BookMark bookMark = bookMarkRepository.findByMountainIdAndUserId(mountainId, userDetails.getUser().getUserId());
+        if(bookMark == null) {
+            BookMark saveBookMark = new BookMark(mountainId, userDetails.getUser().getUserId());
+            bookMarkRepository.save(saveBookMark);
+            return "true";
+        }else {
+            bookMarkRepository.deleteById(bookMark.getBookMarkId());
+            return "false";
+        }
+    }
 
 }

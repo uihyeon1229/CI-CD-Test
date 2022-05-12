@@ -48,7 +48,7 @@ public class PartyController {
 
     //동호회 내용 삭제
     @DeleteMapping("/api/party/{partyId}")
-    public void deleteParty (@PathVariable Long partyId) {
-        partyService.deleteParty(partyId);
+    public void deleteParty (@PathVariable Long partyId,@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        partyService.deleteParty(partyId,userDetails);
     }
 }

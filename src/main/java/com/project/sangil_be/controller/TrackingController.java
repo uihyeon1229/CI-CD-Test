@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @RestController
 public class TrackingController {
@@ -24,7 +22,7 @@ public class TrackingController {
     }
 
     // 맵 트래킹 5초 마다 저장
-    @PostMapping("/api/mountain/tracking/{completedId}")
+    @PostMapping("/api/tracking/mountain/{completedId}")
     public DistanceResponseDto saveMyLocation (@PathVariable Long completedId,@RequestBody TrackingRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return trackingService.saveMyLocation(completedId, requestDto, userDetails);
     }
@@ -47,9 +45,4 @@ public class TrackingController {
         return trackingService.detailTracking(completedId, userDetails);
     }
 
-    // 맵트래킹 마이페이지
-    @GetMapping("/api/mypages/tracking")
-    public List<CompletedListDto> myPageTracking(@AuthenticationPrincipal UserDetailsImpl userDetails){
-        return trackingService.myPageTracking(userDetails);
-    }
 }

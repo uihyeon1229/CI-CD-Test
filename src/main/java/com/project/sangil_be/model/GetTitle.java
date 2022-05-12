@@ -20,4 +20,15 @@ public class GetTitle {
 
     @Column(nullable = false)
     private String userTitleImgUrl;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
+    private User user;
+
+    public GetTitle(String userTitle, String userTitleImgUrl, User kakaoUser) {
+        this.userTitle=userTitle;
+        this.userTitleImgUrl=userTitleImgUrl;
+        this.user=kakaoUser;
+
+    }
 }

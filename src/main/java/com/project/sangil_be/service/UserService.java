@@ -4,11 +4,11 @@ import com.project.sangil_be.S3.S3Service;
 import com.project.sangil_be.dto.*;
 import com.project.sangil_be.utils.DistanceToUser;
 import com.project.sangil_be.model.BookMark;
-import com.project.sangil_be.model.Mountain100;
+import com.project.sangil_be.model.Mountain;
 import com.project.sangil_be.model.MountainComment;
 import com.project.sangil_be.model.User;
 import com.project.sangil_be.repository.BookMarkRepository;
-import com.project.sangil_be.repository.Mountain100Repository;
+import com.project.sangil_be.repository.MountainRepository;
 import com.project.sangil_be.repository.MountainCommentRepository;
 import com.project.sangil_be.repository.UserRepository;
 import com.project.sangil_be.securtiy.UserDetailsImpl;
@@ -29,7 +29,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final BookMarkRepository bookMarkRepository;
-    private final Mountain100Repository mountain100Repository;
+    private final MountainRepository mountainRepository;
     private final MountainCommentRepository mountainCommentRepository;
     private final S3Service s3Service;
 
@@ -49,10 +49,10 @@ public class UserService {
         String nickname = "없음";
         String userImageUrl = "없음";
         String userTitle = "없음";
-        String userTitleImgUrl = "없음";
+        String userTitleImgUrl="없음";
         Long socialId = 0L;
 
-        User user = new User(username, socialId, password, nickname, userImageUrl, userTitle, userTitleImgUrl);
+        User user = new User(username, socialId,password, nickname, userImageUrl, userTitle,userTitleImgUrl);
         userRepository.save(user);
 
         ResponseDto responseDto = new ResponseDto(result);
@@ -62,28 +62,26 @@ public class UserService {
     }
 
     @Transactional
-    public void editname(UsernameRequestDto usernameRequestDto, User user) {
-        user.editusername(usernameRequestDto);
-        userRepository.save(user);
+    public UserResponseDto editname(UsernameRequestDto usernameRequestDto, UserDetailsImpl userDetails) {
+        User user = userRepository.findByUserId(userDetails.getUser().getUserId());
+        user.editname(usernameRequestDto);
+        return new UserResponseDto(user);
+        }
 
+    public String usernameCheck(UsernameRequestDto usernameRequestDto, UserDetailsImpl userDetails) {
+        User user = userRepository.findByUserId(userDetails.getUser().getUserId());
+        if(user.getNickname().equals(usernameRequestDto.getNickname())){
+            return "false";
+        }else{
+            return "true";
+        }
     }
-
-
-//    @Transactional
-//    public void firstimage(MultipartFile multipartFile, User user) {
-//
-//        String profileImageUrl = s3Service.upload(multipartFile, "profileimage");
-//
-//        user.editimage(profileImageUrl);
-//        userRepository.save(user);
-//    }
 
     @Transactional
     public void editimage(MultipartFile multipartFile, User user) {
 
         String[] key = user.getUserImgUrl().split(".com/");
         String imageKey = key[key.length - 1];
-        System.out.println(imageKey);
         String profileImageUrl = s3Service.reupload(multipartFile, "profileimage", imageKey);
 
         user.editimage(profileImageUrl);
@@ -92,7 +90,7 @@ public class UserService {
 
     //유저가 즐겨찾기한 산 가져오는 즐겨찾기
     @Transactional
-    public List<BookMarkResponseDto> getBookMarkMountain(double lat, double lng, UserDetailsImpl userDetails) {
+    public List<BookMarkResponseDto> getBookMarkMountain(double lat,double lng,UserDetailsImpl userDetails) {
         List<BookMark> bookMarkList = bookMarkRepository.findAllByUserId(userDetails.getUser().getUserId());
         List<BookMarkResponseDto> bookMarkResponseDtos = new ArrayList<>();
 
@@ -101,21 +99,21 @@ public class UserService {
 //        Double lng = 126.971188;
 
         for (BookMark bookMark : bookMarkList) {
-            boolean bookMarkChk = bookMarkRepository.existsByMountain100IdAndUserId(bookMark.getMountain100Id(),
+            boolean bookMarkChk = bookMarkRepository.existsByMountainIdAndUserId(bookMark.getMountainId(),
                     userDetails.getUser().getUserId());
-            Mountain100 mountain100 = mountain100Repository.findById(bookMark.getMountain100Id()).orElseThrow(
+            Mountain mountain = mountainRepository.findById(bookMark.getMountainId()).orElseThrow(
                     () -> new IllegalArgumentException("해당하는 산이 없습니다.")
             );
 
             //유저와 즐겨찾기한 산과의 거리 계산
-            Double distance = DistanceToUser.distance(lat, lng, mountain100.getLat(),
-                    mountain100.getLng(), "kilometer");
+            Double distance = DistanceToUser.distance(lat, lng, mountain.getLat(),
+                                                      mountain.getLng(), "kilometer");
 
             int star = 0;
             float starAvr = 0f;
 
             for (int i = 0; i < 10; i++) {
-                List<MountainComment> mountainComments = mountainCommentRepository.findAllByMountain100Id(bookMark.getMountain100Id());
+                List<MountainComment> mountainComments = mountainCommentRepository.findAllByMountainId(bookMark.getMountainId());
                 if (mountainComments.size() == 0) {
                     starAvr = 0;
                 } else {
@@ -123,26 +121,9 @@ public class UserService {
                     starAvr = (float) star / mountainComments.size();
                 }
             }
-            bookMarkResponseDtos.add(new BookMarkResponseDto(mountain100, bookMarkChk, starAvr, distance));
+            bookMarkResponseDtos.add(new BookMarkResponseDto(mountain, bookMarkChk, starAvr, distance));
         }
         return bookMarkResponseDtos;
     }
 
-    public String usernameCheck(UsernameRequestDto usernameRequestDto, UserDetailsImpl userDetails) {
-
-        User user = userRepository.findByUserId(userDetails.getUser().getUserId());
-        System.out.println(user.getUsername());
-        String username = usernameRequestDto.getUsername();
-
-
-        if (user.getUsername().equals(usernameRequestDto.getUsername())) {
-            return "false";
-        } else {
-            if (!username.matches("^[a-zA-Zㄱ-ㅎ0-9-_]{3,11}$")) {
-//                throw new IllegalArgumentException("아이디는 영어와 숫자로 3~10자리로 입력하셔야 합니다!");
-                return "아이디는 영어와 숫자로 3~10자리로 입력하셔야 합니다!";
-            }
-            return "true";
-        }
-    }
 }

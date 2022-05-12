@@ -16,7 +16,7 @@ public class FeedResponseDto {
 
     private Long userId;
 
-    private String username;
+    private String nickname;
 
     private String userImgUrl;
 
@@ -32,7 +32,7 @@ public class FeedResponseDto {
 
     public FeedResponseDto(User user, Feed feed, int l, boolean goodStatus) {
         this.userId = user.getUserId();
-        this.username = user.getUsername();
+        this.nickname = user.getNickname();
         this.userImgUrl = user.getUserImgUrl();
         this.feedImgUrl = feed.getFeedImgUrl();
         this.feedContent = feed.getFeedContent();
@@ -44,7 +44,7 @@ public class FeedResponseDto {
     public FeedResponseDto(Feed feed, int goodCnt, boolean goodStatus) {
 
         this.userId = feed.getUser().getUserId();
-        this.username = feed.getUser().getUsername();
+        this.nickname = feed.getUser().getNickname();
         this.userImgUrl = feed.getUser().getUserImgUrl();
         this.feedImgUrl = feed.getFeedImgUrl();
         this.feedContent = feed.getFeedContent();

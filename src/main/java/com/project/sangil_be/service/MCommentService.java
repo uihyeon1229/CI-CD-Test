@@ -2,9 +2,9 @@ package com.project.sangil_be.service;
 
 import com.project.sangil_be.dto.MCommentRequestDto;
 import com.project.sangil_be.dto.MCommentResponseDto;
-import com.project.sangil_be.model.Mountain100;
+import com.project.sangil_be.model.Mountain;
 import com.project.sangil_be.model.MountainComment;
-import com.project.sangil_be.repository.Mountain100Repository;
+import com.project.sangil_be.repository.MountainRepository;
 import com.project.sangil_be.repository.MountainCommentRepository;
 import com.project.sangil_be.securtiy.UserDetailsImpl;
 import com.project.sangil_be.utils.Validator;
@@ -13,12 +13,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class MCommentService {
-    private final Mountain100Repository mountain100Repository;
+    private final MountainRepository mountainRepository;
     private final MountainCommentRepository mountainCommentRepository;
     private final Validator validator;
 
@@ -31,7 +30,7 @@ public class MCommentService {
         } else {
             msg = "작성 가능";
         }
-        Mountain100 mountain100 = mountain100Repository.findById(mountainId).orElseThrow(
+        Mountain mountain = mountainRepository.findById(mountainId).orElseThrow(
                 () -> new IllegalArgumentException("산 정보가 존재하지 않습니다.")
         );
         validator.emptyMComment(mCommentRequestDto);

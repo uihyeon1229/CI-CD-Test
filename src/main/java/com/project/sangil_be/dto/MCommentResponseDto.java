@@ -10,7 +10,7 @@ public class MCommentResponseDto {
     private Long mountainCommentId;
     private String mountainComment;
     private String userTitle;
-    private String username;
+    private String nickname;
     private int star;
     private String msg;
 
@@ -19,16 +19,16 @@ public class MCommentResponseDto {
         this.mountainCommentId = mountainComment.getMountainCommentId();
         this.mountainComment = mountainComment.getMountainComment();
         this.userTitle = userDetails.getUser().getUserTitle();
-        this.username = userDetails.getUsername();
+        this.nickname = userDetails.getNickname();
         this.star = mountainComment.getStar();
         this.msg = msg;
     }
 
     public MCommentResponseDto(MountainComment mountainComment, UserDetailsImpl userDetails) {
-        this.mountainId = mountainComment.getMountain100Id();
+        this.mountainId = mountainComment.getMountainId();
         this.mountainComment = mountainComment.getMountainComment();
         this.userTitle = userDetails.getUser().getUserTitle();
-        this.username = userDetails.getUser().getUsername();
+        this.nickname = userDetails.getUser().getNickname();
         this.star = mountainComment.getStar();
     }
 }

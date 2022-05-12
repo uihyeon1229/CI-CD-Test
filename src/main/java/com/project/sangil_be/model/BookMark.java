@@ -19,10 +19,10 @@ public class BookMark {
     private Long userId;
 
     @Column(nullable = false)
-    private Long mountain100Id;
+    private Long mountainId;
 
     public BookMark(Long mountainId, Long userId) {
-        this.mountain100Id = mountainId;
+        this.mountainId = mountainId;
         this.userId = userId;
     }
 }

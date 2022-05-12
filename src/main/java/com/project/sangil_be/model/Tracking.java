@@ -38,8 +38,8 @@ public class Tracking {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mountain100Id")
-    private Mountain100 mountain100;
+    @JoinColumn(name = "mountainId")
+    private Mountain mountain;
 
     public Tracking(Long completedId, TrackingRequestDto requestDto, User user) {
         this.completedId = completedId;

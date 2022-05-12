@@ -24,7 +24,6 @@ public class FeedController {
 
     private final FeedService feedService;
     private final FeedRepository feedRepository;
-    private final GoodRepository goodRepository;
 
     //피드 작성
     @PostMapping("/api/feeds/write")

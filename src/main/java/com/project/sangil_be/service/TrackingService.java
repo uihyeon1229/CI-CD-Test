@@ -2,10 +2,10 @@ package com.project.sangil_be.service;
 
 import com.project.sangil_be.dto.*;
 import com.project.sangil_be.model.Completed;
-import com.project.sangil_be.model.Mountain100;
+import com.project.sangil_be.model.Mountain;
 import com.project.sangil_be.model.Tracking;
 import com.project.sangil_be.repository.CompletedRepository;
-import com.project.sangil_be.repository.Mountain100Repository;
+import com.project.sangil_be.repository.MountainRepository;
 import com.project.sangil_be.repository.MountainCommentRepository;
 import com.project.sangil_be.repository.TrackingRepository;
 import com.project.sangil_be.securtiy.UserDetailsImpl;
@@ -22,7 +22,7 @@ import java.util.List;
 public class TrackingService {
     private final TrackingRepository trackingRepository;
     private final CompletedRepository completedRepository;
-    private final Mountain100Repository mountain100Repository;
+    private final MountainRepository mountainRepository;
     private final MountainCommentRepository mountainCommentRepository;
 
     // 트래킹 시작
@@ -36,11 +36,12 @@ public class TrackingService {
     // 맵 트래킹 5초 마다 저장
     @Transactional
     public DistanceResponseDto saveMyLocation(Long completedId, TrackingRequestDto trackingRequestDto, UserDetailsImpl userDetails) {
+        System.out.println(completedId);
         List<Tracking> trackinglist = trackingRepository.findAllByCompletedId(completedId);
         Completed completed = completedRepository.findByCompleteId(completedId);
-        Mountain100 mountain100 = mountain100Repository.findByMountain100Id(completed.getMountain100Id());
+        Mountain mountain = mountainRepository.findByMountainId(completed.getMountainId());
         Tracking saveTracking = new Tracking();
-        saveTracking.setMountain100(mountain100);
+        saveTracking.setMountain(mountain);
         saveTracking.setUser(userDetails.getUser());
         DistanceResponseDto distanceResponseDto = new DistanceResponseDto();
         if(trackinglist.size()==0){
@@ -76,7 +77,7 @@ public class TrackingService {
     public String saveTracking(Long completedId, CompleteRequestDto completeRequestDto, UserDetailsImpl userDetails) {
         try {
             Completed completed = completedRepository.findByCompleteId(completedId);
-            if (mountainCommentRepository.existsByUserIdAndMountain100Id(completed.getUserId(), completed.getMountain100Id())) {
+            if (mountainCommentRepository.existsByUserIdAndMountainId(completed.getUserId(), completed.getMountainId())) {
                 completed.update(completeRequestDto);
                 return "true";
             } else {
@@ -105,12 +106,12 @@ public class TrackingService {
         List<Tracking> trackingList = trackingRepository.findAllByCompletedId(completedId);
         Completed completed = completedRepository.findByCompleteId(completedId);
         List<TrackingResponseDto> trackingResponseDtoList = new ArrayList<>();
-        Mountain100 mountain100 = mountain100Repository.findByMountain100Id(completed.getMountain100Id());
+        Mountain mountain = mountainRepository.findByMountainId(completed.getMountainId());
         for (Tracking tracking : trackingList) {
             TrackingResponseDto trackingResponseDto = new TrackingResponseDto(tracking.getLat(), tracking.getLng());
             trackingResponseDtoList.add(trackingResponseDto);
         }
-        return new TrackingListDto(userDetails,completedId,mountain100,completed,trackingResponseDtoList);
+        return new TrackingListDto(userDetails,completedId,mountain,completed,trackingResponseDtoList);
     }
 
     // 맵트래킹 마이페이지
@@ -118,8 +119,8 @@ public class TrackingService {
         List<Completed> completed = completedRepository.findAllByUserId(userDetails.getUser().getUserId());
         List<CompletedListDto> completedListDtos = new ArrayList<>();
         for (Completed complete : completed) {
-            Mountain100 mountain100 = mountain100Repository.findByMountain100Id(complete.getMountain100Id());
-            CompletedListDto completedListDto = new CompletedListDto(complete,mountain100);
+            Mountain mountain = mountainRepository.findByMountainId(complete.getMountainId());
+            CompletedListDto completedListDto = new CompletedListDto(complete,mountain);
             completedListDtos.add(completedListDto);
         }
         return completedListDtos;

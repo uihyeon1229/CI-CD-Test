@@ -8,13 +8,12 @@ import java.util.Optional;
 
 public interface BookMarkRepository extends JpaRepository <BookMark, Long> {
 
-    BookMark findByMountain100IdAndUserId(Long mountainId, Long userId);
-
-    boolean existsByMountain100IdAndUserId(Long mountain100Id, Long userId);
-
     List<BookMark> findAllByUserId(Long userId);
 
-    int countAllByMountain100Id(Long mountain100Id);
+    BookMark findByMountainIdAndUserId(Long mountainId, Long userId);
 
-//    Boolean existsByMountain100Id(Long mountain100Id);
+    int countAllByMountainId(Long mountainId);
+
+    boolean existsByMountainIdAndUserId(Long mountainId, Long userId);
+
 }

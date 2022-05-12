@@ -20,7 +20,7 @@ public class Completed {
     private Long userId;
 
     @Column(nullable = false)
-    private Long mountain100Id;
+    private Long mountainId;
 
     @Column(nullable = false)
     private Integer send;
@@ -32,7 +32,7 @@ public class Completed {
     private String totalTime;
 
     public Completed(Long mountainId, Integer send, Long userId) {
-        this.mountain100Id=mountainId;
+        this.mountainId =mountainId;
         this.send=send;
         this.userId=userId;
     }

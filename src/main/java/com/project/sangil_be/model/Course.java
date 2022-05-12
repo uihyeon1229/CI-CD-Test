@@ -19,7 +19,7 @@ public class Course {
     private String course;
 
     @Column(nullable = false)
-    private Long mountain100Id;
+    private Long mountainId;
 
     @Column(nullable = false)
     private String courseTime;

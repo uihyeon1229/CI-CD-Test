@@ -64,31 +64,5 @@ public class UserController {
     public UserResponseDto isLogin(@AuthenticationPrincipal UserDetailsImpl userDetails){
         return new UserResponseDto(userDetails);
     }
-    //닉네임 중복체크
-    @PostMapping("/api/mypages/usernameCheck")
-    public String usernameCheck (@RequestBody UsernameRequestDto usernameRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return userService.usernameCheck(usernameRequestDto,userDetails);
-    }
-
-    //username 수정
-    @PutMapping("/api/mypages/profilename")
-    public void editname(@RequestBody UsernameRequestDto usernameRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        User user = userDetails.getUser();
-        userService.editname(usernameRequestDto, user);
-    }
-
-    //userimageUrl 수정
-    @PutMapping("/api/mypages/profileUrl")
-    public void editimage(@RequestParam("file") MultipartFile multipartFile, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        User user = userDetails.getUser();
-        userService.editimage(multipartFile, user);
-    }
-
-    //마이페이지 즐겨찾기한 산
-    @GetMapping("/api/mypages/bookmark")
-    public List<BookMarkResponseDto> getBookMarkMountain (@RequestParam double lat,@RequestParam double lng,@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.getBookMarkMountain(lat,lng,userDetails);
-    }
-
 
 }

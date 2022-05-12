@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 public class TwoPartyListDto {
-
+    private Long partyId;
     private String title;
     private LocalDate partyDate;
     private int maxPeople;
@@ -19,6 +19,7 @@ public class TwoPartyListDto {
     private LocalDateTime createdAt;
 
     public TwoPartyListDto(Party party) {
+        this.partyId = party.getPartyId();
         this.title=party.getTitle();
         this.partyDate = party.getPartyDate();
         this.maxPeople = party.getMaxPeople();

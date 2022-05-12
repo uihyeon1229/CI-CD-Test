@@ -1,6 +1,6 @@
 package com.project.sangil_be.dto;
 
-import com.project.sangil_be.model.Mountain100;
+import com.project.sangil_be.model.Mountain;
 import lombok.Getter;
 
 import java.util.List;
@@ -19,15 +19,15 @@ public class MountainResponseDto {
     private List<CourseListDto> courseLists;
     private CommentDto commentDto;
 
-    public MountainResponseDto(Mountain100 mountain100, WeatherDto weatherDto, String starAvr, List<CourseListDto> courseLists, CommentDto commentDto) {
-        this.mountainId = mountain100.getMountain100Id();
-        this.mountain = mountain100.getMountain();
+    public MountainResponseDto(Mountain mountain, WeatherDto weatherDto, String starAvr, List<CourseListDto> courseLists, CommentDto commentDto) {
+        this.mountainId = mountain.getMountainId();
+        this.mountain = mountain.getMountain();
         this.weather = weatherDto.getWeather();
         this.weatherImgUrl = weatherDto.getWeatherImageUrl();
-        this.mountainImgUrl = mountain100.getMountainImgUrl();
-        this.mountainAddress = mountain100.getMountainAddress();
-        this.mountainInfo = mountain100.getMountainInfo();
-        this.height = mountain100.getHeight();
+        this.mountainImgUrl = mountain.getMountainImgUrl();
+        this.mountainAddress = mountain.getMountainAddress();
+        this.mountainInfo = mountain.getMountainInfo();
+        this.height = mountain.getHeight();
         this.starAvr = starAvr;
         this.courseLists = courseLists;
         this.commentDto = commentDto;

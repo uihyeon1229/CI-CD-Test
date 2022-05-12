@@ -1,5 +1,6 @@
 package com.project.sangil_be.model;
 
+import com.project.sangil_be.dto.PartyRequestDto;
 import com.project.sangil_be.utils.Timestamped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -50,17 +51,15 @@ public class Party extends Timestamped {
     @JoinColumn(name = "userId")
     private User user;
 
-    public Party(String title, String mountain, String address, LocalDate partyDate,
-                 LocalTime partyTime, int maxPeople, int curPeople, String partyContent,
-                 boolean completed, User user) {
-        this.title = title;
-        this.mountain = mountain;
-        this.address = address;
-        this.partyDate = partyDate;
-        this.partyTime = partyTime;
-        this.maxPeople = maxPeople;
+    public Party(PartyRequestDto partyRequestDto, int curPeople, boolean completed, User user) {
+        this.title = partyRequestDto.getTitle();
+        this.mountain = partyRequestDto.getMountain();
+        this.address = partyRequestDto.getAddress();
+        this.partyDate = partyRequestDto.getPartyDate();
+        this.partyTime = partyRequestDto.getPartyTime();
+        this.maxPeople = partyRequestDto.getMaxPeople();
         this.curPeople = curPeople;
-        this.partyContent = partyContent;
+        this.partyContent = partyRequestDto.getPartyContent();
         this.completed = completed;
         this.user = user;
     }

@@ -1,5 +1,6 @@
 package com.project.sangil_be.dto;
 
+import com.project.sangil_be.model.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,6 +8,7 @@ import lombok.Setter;
 @Setter
 public class UsernameRequestDto {
 
-    private String username;
+    private String nickname;
+
 
 }

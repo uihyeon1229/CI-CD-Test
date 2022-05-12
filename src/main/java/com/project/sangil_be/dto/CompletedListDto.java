@@ -1,7 +1,7 @@
 package com.project.sangil_be.dto;
 
 import com.project.sangil_be.model.Completed;
-import com.project.sangil_be.model.Mountain100;
+import com.project.sangil_be.model.Mountain;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,11 +15,11 @@ public class CompletedListDto {
     private Double totalDistance;
     private String totalTime;
 
-    public CompletedListDto(Completed complete, Mountain100 mountain100) {
+    public CompletedListDto(Completed complete, Mountain mountain) {
         this.completedId = complete.getCompleteId();
-        this.mountain = mountain100.getMountain();
-        this.lat = mountain100.getLat();
-        this.lng = mountain100.getLng();
+        this.mountain = mountain.getMountain();
+        this.lat = mountain.getLat();
+        this.lng = mountain.getLng();
         this.totalDistance = complete.getTotalDistance();
         this.totalTime = complete.getTotalTime();
     }
