@@ -24,7 +24,7 @@
 ## 수정
 
 
-#!/bin/bash
+!/bin/bash
 BUILD_JAR=$(ls /home/ubuntu/action/build/libs/*.jar)
 JAR_NAME=$(basename $BUILD_JAR)
 echo "> build 파일명: $JAR_NAME" >> /home/ubuntu/action/deploy.log
