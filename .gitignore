@@ -40,3 +40,6 @@ out/
 application.properties
 aws.yml
 application.yml
+
+application-real1.properties
+application-real2.properties
