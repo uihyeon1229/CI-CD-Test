@@ -30,7 +30,7 @@ else
 fi
 
 echo "> application.jar 교체"
-IDLE_APPLICATION=$IDLE_PROFILE-demo.jar
+IDLE_APPLICATION=$IDLE_PROFILE-SanGil_BE.jar
 IDLE_APPLICATION_PATH=$DEPLOY_PATH$IDLE_APPLICATION
 
 # 미연결된 Jar로 신규 Jar 심볼릭 링크 (ln)
@@ -49,7 +49,7 @@ else
 fi
 
 echo "> $IDLE_PROFILE 배포"
-nohup java -jar -Dspring.profiles.active=$IDLE_PROFILE $IDLE_APPLICATION_PATH > $DEPLOY_PATH/nohup.out 2>&1 &
+nohup java -jar -Dspring.profiles.active=$IDLE_PROFILE $IDLE_APPLICATION_PATH &
 
 # Nginx Port 스위칭을 위한 스크립트
 echo "> 스위칭"
