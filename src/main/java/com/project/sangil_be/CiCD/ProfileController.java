@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 public class ProfileController {
     private final Environment env;
+    //테스트
 
     @GetMapping("/profile")
     public String profile() {
