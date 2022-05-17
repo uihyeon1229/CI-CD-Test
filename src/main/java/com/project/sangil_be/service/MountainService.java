@@ -58,7 +58,7 @@ public class MountainService {
         return searchDto;
 
     }
-
+//테스트
     // 검색 후 페이지
     public Page<SearchDto> searhMountain(String keyword, int pageNum) {
         List<Mountain> mountainList = mountainRepository.searchAllByMountain(keyword);
