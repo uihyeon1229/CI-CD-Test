@@ -10,7 +10,7 @@ DEPLOY_PATH=/home/ubuntu/temp/
 cp $BUILD_PATH $DEPLOY_PATH
 
 echo "> 현재 구동중인 Set 확인"
-CURRENT_PROFILE=$(curl -s https://3.39.187.198/profile)
+CURRENT_PROFILE=$(curl -s http://127.0.0.1/profile)
 echo "> $CURRENT_PROFILE"
 
 # 쉬고 있는 dev 찾기: dev이 사용중이면 dev2가 쉬고 있고, 반대면 dev이 쉬고 있음
