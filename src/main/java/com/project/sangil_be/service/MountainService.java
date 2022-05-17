@@ -37,7 +37,7 @@ public class MountainService {
         Collections.shuffle(mountain100DtoList);
 
         List<SearchDto> searchDto = new ArrayList<>();
-
+//테스트
         int star = 0;
         float starAvr;
         for (int i = 0; i < 10; i++) {
