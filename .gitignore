@@ -37,6 +37,3 @@ out/
 .vscode/
 
 #custom
-application.properties
-application-real1.properties
-application-real2.properties
