@@ -15,12 +15,12 @@ import java.util.List;
 @RestController
 public class ProfileController {
     private final Environment env;
-    //테스트3
+    //테스트4
 
     @GetMapping("/profile")
     public String profile() {
         List<String> profiles = Arrays.asList(env.getActiveProfiles());
-        List<String> realProfiles = Arrays.asList("real", "real1", "real2");
+        List<String> realProfiles = Arrays.asList("real1", "real2");
         String defaultProfile = profiles.isEmpty()? "default" : profiles.get(0);
 //테스트2
         // real, real1, real2 중 하나라도 있으면 그 값 반환
