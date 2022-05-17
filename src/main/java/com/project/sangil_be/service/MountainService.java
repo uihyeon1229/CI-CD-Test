@@ -54,7 +54,7 @@ public class MountainService {
 
             searchDto.add(mountainInfo);
         }
-
+//테스트
         return searchDto;
 
     }
