@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 BASE_PATH=/home/ubuntu/
-BUILD_PATH=$(ls $BASE_PATH/action/*.jar)
+BUILD_PATH=$(ls $BASE_PATH/action/build/libs/*.jar)
 JAR_NAME=$(basename $BUILD_PATH)
 echo "> build 파일명: $JAR_NAME"
 
